@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+
+{% block head_title %}
+Home
+{% endblock head_title %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+
+    <h3>Welcome {{ user.username }} !</h3>
+    <p>A simple todo app</p>
+    {% if user.is_authenticated %}
+      <a href="/create-todo" class = "btn btn-light">Create</a>
+      <a href="/import-todo" class = "btn btn-primary">Import</a>
+      <a href="/export-todo" class = "float-right btn btn-danger">Export</a>
+    {% else %}
+    {% endif %}
+
+    <br>
+{% else %}
+    <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Todo</th>
+      <th scope="col">Status</th>
+      <th scope="col">Created</th>
+      <th scope="col">Updated</th>
+      {% if user.is_authenticated %}
+        <th scope="col">Operation</th>
+      {% else %}
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    
+    {% for obj in objects %}
+    <tr>
+      <th scope="row">{{obj.user}}</th>
+      <td>{{obj.text}}</td>
+      
+      {% if obj.is_completed %}
+        <td class="table-success">Completed</td>
+      {% else %}
+        <td class="table-light">Not Completed</td>
+      {% endif %}
+      <td>{{obj.created_time}}</td>
+      <td>{{obj.last_updated}}</td>
+      {% if user.is_authenticated %}
+      {% if obj.is_completed %}
+        <td><a href="/update/{{obj.id}}" class = "btn btn-light">UNCOMPLETE</a>
+      {% else %}
+        <td><a href="/update/{{obj.id}}" class = "btn btn-primary">COMPLETE</a>
+      {% endif %}
+      <a href="/delete/{{obj.id}}" class = "btn btn-danger">DELETE</a></td>
+      {% else %}
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
